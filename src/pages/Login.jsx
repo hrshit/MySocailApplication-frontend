@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -31,13 +32,44 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const [formErrors, setFormErrors] = useState({
+        emptyEmail: false,
+        invalidEmail: false,
+        emptyPassword: false,
+        invalidPassword: false,
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        // validateForm();
+    };
+
+    const validateForm = () => {
+        const errors = {
+            emptyEmail: formData.email.trim() === '',
+            invalidEmail: !/^\S+@\S+\.\S+$/.test(formData.email),
+            emptyPassword: formData.password.trim() === '',
+            invalidPassword: formData.password.length < 6,
+        };
+
+        setFormErrors(errors);
+        return !Object.values(errors).some(Boolean); // If any value in errors object is true, the form is invalid
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        if (validateForm()) {
+            console.log('Form submitted successfully');
+        } else {
+            console.log('Form contains errors. Please check the fields.');
+        }
     };
 
     return (
@@ -84,6 +116,10 @@ export default function SignInSide() {
                                 name="email"
                                 autoComplete="email"
                                 autoFocus
+                                value={formData.email}
+                                onChange={handleChange}
+                                error={formErrors.emptyEmail || formErrors.invalidEmail}
+                                helperText={formErrors.emptyEmail ? 'Email is required' : formErrors.invalidEmail ? 'Invalid Email' : ''}
                             />
                             <TextField
                                 margin="normal"
@@ -94,6 +130,10 @@ export default function SignInSide() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                error={formErrors.emptyPassword || formErrors.invalidPassword}
+                                helperText={formErrors.emptyPassword ? 'Password is required' : formErrors.invalidPassword ? 'Password must be at least 6 characters' : ''}
                             />
                             <FormControlLabel
                                 control={<Checkbox value="remember" color="primary" />}

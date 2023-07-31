@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+}
+
+.navigation {
+    margin-left: auto;
+}
+
+.navigation ul {
+    list-style: none;
+    display: flex;
+}
+
+.navigation li {
+    margin-left: 20px;
+}
+
+.navigation li:first-child {
+    margin-left: 0;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Media query for responsive design */
+@media screen and (max-width: 600px) {
+    .header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .navigation {
+        margin-top: 20px;
+    }
+}

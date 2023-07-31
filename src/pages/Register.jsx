@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -34,20 +35,59 @@ export default function SignUp() {
 
     // const { register, handlingSubmit } = useForm();
 
-    const [fNameError, setFNameError] = React.useState("");
-    const [emailError, setEmailError] = React.useState("");
-    const [passwordError, setPasswordError] = React.useState("");
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-            firstName: data.get('firstName')
-        });
-        if (data.get('firstName') === "") {
-            setFNameError("Enter your first Name");
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+
+    const [formErrors, setFormErrors] = useState({
+        emptyFirstName: false,
+        emptyEmail: false,
+        invalidEmail: false,
+        emptyPassword: false,
+        invalidPassword: false,
+        notMatchingPassword: false,
+    });
+
+    const errorMessages = {
+        emptyFirstNameError: "first name is required",
+        emptyEmailError: "Email is required",
+        invalidEmailError: "Email is invalalid",
+        emptyPasswordError: "password is required",
+        invalidPasswordError: "password must be at least 6 character",
+        notMatchingPasswordError: "password is not matched",
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        // validateForm();
+    };
+
+    const validateForm = () => {
+        const errors = {
+            emptyFirstName: formData.firstName.trim() === '',
+            emptyEmail: formData.email.trim() === '',
+            invalidEmail: !/^\S+@\S+\.\S+$/.test(formData.email),
+            emptyPassword: formData.password.trim() === '',
+            invalidPassword: formData.password.length < 6,
+            notMatchingPassword: formData.confirmPassword !== formData.password,
+        };
+
+        setFormErrors(errors);
+        return !Object.values(errors).some(Boolean); // If any value in errors object is true, the form is invalid
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            console.log('Form submitted successfully');
+        } else {
+            console.log('Form contains errors. Please check the fields.');
         }
     };
 
@@ -73,15 +113,17 @@ export default function SignUp() {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    error={fNameError && fNameError.length ? true : false}
+                                    error={formErrors.emptyFirstName}
                                     autoComplete="given-name"
                                     name="firstName"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
                                     required
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
                                     autoFocus
-                                    helperText={fNameError}
+                                    helperText={formErrors.emptyFirstName ? errorMessages.emptyFirstNameError : ''}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -101,6 +143,10 @@ export default function SignUp() {
                                     label="Email Address"
                                     name="email"
                                     autoComplete="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    error={formErrors.emptyEmail || formErrors.invalidEmail}
+                                    helperText={formErrors.emptyEmail ? errorMessages.emptyEmailError : formErrors.invalidEmail ? errorMessages.invalidEmailError : ''}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -112,6 +158,24 @@ export default function SignUp() {
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    error={formErrors.emptyPassword || formErrors.invalidPassword}
+                                    helperText={formErrors.emptyPassword ? errorMessages.emptyPasswordError : formErrors.invalidPassword ? errorMessages.invalidPasswordError : ''}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    name="confirmPassword"
+                                    label="Confirm Password"
+                                    type="password"
+                                    id="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    error={formErrors.notMatchingPassword}
+                                    helperText={formErrors.notMatchingPassword ? errorMessages.notMatchingPasswordError : ''}
                                 />
                             </Grid>
                         </Grid>

@@ -3,6 +3,7 @@ import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import "./App.css";
+import Header from './components/Header.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
 function App({ routes }) {
   return (
     <>
+      <Header />
       <RouterProvider router={router} />
     </>
   );
