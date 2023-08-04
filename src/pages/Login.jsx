@@ -13,6 +13,9 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useDispatch } from 'react-redux';
+import { loginAction } from '../redux/actions/authActions';
+
 
 function Copyright(props) {
     return (
@@ -32,6 +35,8 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
+
+    const dispatch = useDispatch();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -66,6 +71,11 @@ export default function SignInSide() {
     const handleSubmit = (event) => {
         event.preventDefault();
         if (validateForm()) {
+            const loginBody = {
+                email: formData.email,
+                password: formData.password,
+            }
+            dispatch(loginAction(loginBody));
             console.log('Form submitted successfully');
         } else {
             console.log('Form contains errors. Please check the fields.');

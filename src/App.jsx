@@ -4,6 +4,7 @@ import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import "./App.css";
 import Header from './components/Header.jsx';
+import { useSelector } from 'react-redux'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,7 +16,11 @@ const router = createBrowserRouter(
   )
 )
 
-function App({ routes }) {
+function App() {
+
+  const myState = useSelector((state) => state);
+  console.log("my state", myState);
+
   return (
     <>
       <Header />

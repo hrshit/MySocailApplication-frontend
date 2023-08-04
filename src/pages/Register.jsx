@@ -2,10 +2,9 @@ import * as React from 'react';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -13,6 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { connect, useDispatch } from 'react-redux';
+import { registerAction } from '../redux/actions/authActions';
+import { useSelector } from 'react-redux';
+
 
 function Copyright(props) {
     return (
@@ -34,6 +37,9 @@ const defaultTheme = createTheme();
 export default function SignUp() {
 
     // const { register, handlingSubmit } = useForm();
+    const dispatch = useDispatch();
+    const myState = useSelector((state) => state);
+    console.log("my state", myState);
 
 
     const [formData, setFormData] = useState({
@@ -54,12 +60,12 @@ export default function SignUp() {
     });
 
     const errorMessages = {
-        emptyFirstNameError: "first name is required",
+        emptyFirstNameError: "First name is required",
         emptyEmailError: "Email is required",
-        invalidEmailError: "Email is invalalid",
-        emptyPasswordError: "password is required",
-        invalidPasswordError: "password must be at least 6 character",
-        notMatchingPasswordError: "password is not matched",
+        invalidEmailError: "Email is invalid",
+        emptyPasswordError: "Password is required",
+        invalidPasswordError: "Password must be at least 8 character, it should contain at least 1 number and 1 letter",
+        notMatchingPasswordError: "Password is not matched",
     }
 
     const handleChange = (e) => {
@@ -74,7 +80,7 @@ export default function SignUp() {
             emptyEmail: formData.email.trim() === '',
             invalidEmail: !/^\S+@\S+\.\S+$/.test(formData.email),
             emptyPassword: formData.password.trim() === '',
-            invalidPassword: formData.password.length < 6,
+            invalidPassword: formData.password.length < 8 || formData.password.match(!(/\d/)) || formData.password.match(!(/[a-zA-Z]/)),
             notMatchingPassword: formData.confirmPassword !== formData.password,
         };
 
@@ -85,6 +91,12 @@ export default function SignUp() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
+            const registerBody = {
+                name: formData.firstName + " " + formData.lastName,
+                email: formData.email,
+                password: formData.password
+            }
+            dispatch(registerAction(registerBody));
             console.log('Form submitted successfully');
         } else {
             console.log('Form contains errors. Please check the fields.');
@@ -132,6 +144,8 @@ export default function SignUp() {
                                     id="lastName"
                                     label="Last Name"
                                     name="lastName"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
                                     autoComplete="family-name"
                                 />
                             </Grid>
@@ -179,14 +193,25 @@ export default function SignUp() {
                                 />
                             </Grid>
                         </Grid>
-                        <Button
+                        {/* <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
                             Register
-                        </Button>
+                        </Button> */}
+                        <LoadingButton
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            size="large"
+                            loading={myState.isFetching}
+                            loadingPosition="end"
+                        >
+                            <span>Send</span>
+                        </LoadingButton>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="#" variant="body2">
