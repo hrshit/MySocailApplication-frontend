@@ -1,20 +1,21 @@
 import * as React from 'react';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { registerAction } from '../redux/actions/authActions';
-import { useSelector } from 'react-redux';
+import { authProps } from '../shared/prop-types/reducerProps';
+
 
 
 function Copyright(props) {
@@ -34,13 +35,9 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignUp() {
+function SignUp({ auth, dispatch }) {
 
-    // const { register, handlingSubmit } = useForm();
-    const dispatch = useDispatch();
-    const myState = useSelector((state) => state);
-    console.log("my state", myState);
-
+    console.log("auth State", auth);
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -118,6 +115,7 @@ export default function SignUp() {
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
                     </Avatar>
+
                     <Typography component="h1" variant="h5">
                         Register
                     </Typography>
@@ -193,21 +191,17 @@ export default function SignUp() {
                                 />
                             </Grid>
                         </Grid>
-                        {/* <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Register
-                        </Button> */}
+                        {auth.errorMessage &&
+                            <Alert variant="filled" severity="error">
+                                {auth.errorMessage}
+                            </Alert>}
                         <LoadingButton
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                             size="large"
-                            loading={myState.isFetching}
+                            loading={auth.isFetching}
                             loadingPosition="end"
                         >
                             <span>Send</span>
@@ -226,3 +220,11 @@ export default function SignUp() {
         </ThemeProvider>
     );
 }
+
+SignUp.propTypes = {
+    auth: authProps.isRequired,
+};
+
+export default connect((state) => ({
+    auth: state.auth,
+}))(SignUp);

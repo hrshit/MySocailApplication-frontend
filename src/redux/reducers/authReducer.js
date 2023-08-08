@@ -1,10 +1,11 @@
-import { LOGIN, REGISTER, FETCHING } from "../actions/authActions.js"
+import { LOGIN, REGISTER, FETCHING, ERROR } from "../actions/authActions.js"
 
 const defaultState = {
     isFetching: false,
     isLoggedIn: false,
     tokens: {},
-    loggedInUser: {}
+    loggedInUser: {},
+    errorMessage: '',
 };
 
 const authReducer = (state = defaultState, action) => {
@@ -15,7 +16,8 @@ const authReducer = (state = defaultState, action) => {
                 isFetching: false,
                 isLoggedIn: true,
                 tokens: action.payload.tokens,
-                loggedInUser: action.payload.user
+                loggedInUser: action.payload.user,
+                errorMessage: '',
             }
         }
         case REGISTER: {
@@ -24,13 +26,21 @@ const authReducer = (state = defaultState, action) => {
                 isFetching: false,
                 isLoggedIn: true,
                 tokens: action.payload.tokens,
-                loggedInUser: action.payload.user
+                loggedInUser: action.payload.user,
+                errorMessage: '',
             }
         }
         case FETCHING: {
             return {
                 ...state,
                 isFetching: true,
+            }
+        }
+        case ERROR: {
+            return {
+                ...state,
+                errorMessage: action.payload,
+                isFetching: false
             }
         }
         default:

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -9,12 +9,17 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
 import { loginAction } from '../redux/actions/authActions';
+import { connect } from 'react-redux';
+import { authProps } from '../shared/prop-types/reducerProps';
+
+
 
 
 function Copyright(props) {
@@ -34,9 +39,9 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignInSide() {
+function SignInSide({ auth, dispatch }) {
 
-    const dispatch = useDispatch();
+    console.log("Hello world", auth);
 
     const [formData, setFormData] = useState({
         email: '',
@@ -115,6 +120,8 @@ export default function SignInSide() {
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Log in
+                            {/* {auth.errorMessage && <div>{auth.errorMessage}</div>} */}
+                            {/* {auth.successMessage && <div>{auth.successMessage}</div>} */}
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <TextField
@@ -149,14 +156,21 @@ export default function SignInSide() {
                                 control={<Checkbox value="remember" color="primary" />}
                                 label="Remember me"
                             />
-                            <Button
+                            {auth.errorMessage &&
+                                <Alert variant="filled" severity="error">
+                                    {auth.errorMessage}
+                                </Alert>}
+                            <LoadingButton
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
+                                size="large"
+                                loading={auth.isFetching}
+                                loadingPosition="end"
                             >
-                                Sign In
-                            </Button>
+                                <span>Login</span>
+                            </LoadingButton>
                             <Grid container>
                                 <Grid item xs>
                                     <Link href="#" variant="body2">
@@ -177,3 +191,11 @@ export default function SignInSide() {
         </ThemeProvider>
     );
 }
+
+SignInSide.propTypes = {
+    auth: authProps.isRequired,
+};
+
+export default connect((state) => ({
+    auth: state.auth,
+}))(SignInSide);
