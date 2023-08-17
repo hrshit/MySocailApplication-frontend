@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -37,7 +38,11 @@ const defaultTheme = createTheme();
 
 function SignUp({ auth, dispatch }) {
 
-    console.log("auth State", auth);
+
+
+    const navigate = useNavigate();
+    if (auth.isLoggedIn)
+        navigate('/');
 
     const [formData, setFormData] = useState({
         firstName: '',

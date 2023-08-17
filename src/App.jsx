@@ -1,32 +1,56 @@
-import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+import { Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
+import Profile from "./pages/Profile.jsx";
 import "./App.css";
 import Header from './components/Header.jsx';
-import { useSelector } from 'react-redux'
+import { connect } from 'react-redux';
+import { authProps } from './shared/prop-types/reducerProps.js';
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/">
-      <Route index element={<Home />} />
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
-    </Route>
-  )
-)
+let isAuthenticated = false;
 
-function App() {
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Header />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+      {
+        path: "register",
+        element: isAuthenticated ? <Navigate replace to="/" /> : <Register />,
+      },
+      {
+        path: "login",
+        element: isAuthenticated ? <Navigate replace to="/" /> : <Login />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      }
+    ],
+  },
+]
+);
 
-  const myState = useSelector((state) => state);
-  console.log("my state", myState);
-
+function App({ auth }) {
+  isAuthenticated = auth.isLoggedIn;
   return (
     <>
-      <Header />
-      <RouterProvider router={router} />
+      <RouterProvider router={router}>
+      </RouterProvider>
+
     </>
   );
 }
 
-export default App;
+
+App.propTypes = {
+  auth: authProps.isRequired,
+};
+export default connect((state) => ({
+  auth: state.auth,
+}))(App);

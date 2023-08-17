@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER, FETCHING, ERROR } from "../actions/authActions.js"
+import { LOGIN, REGISTER, FETCHING, ERROR, LOGOUT } from "../actions/authActions.js"
 
 const defaultState = {
     isFetching: false,
@@ -41,6 +41,15 @@ const authReducer = (state = defaultState, action) => {
                 ...state,
                 errorMessage: action.payload,
                 isFetching: false
+            }
+        }
+        case LOGOUT: {
+            return {
+                ...state,
+                isLoggedIn: false,
+                tokens: {},
+                loggedInUser: {},
+                errorMessage: '',
             }
         }
         default:

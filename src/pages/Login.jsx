@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,13 +16,8 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useDispatch } from 'react-redux';
 import { loginAction } from '../redux/actions/authActions';
-import { connect } from 'react-redux';
 import { authProps } from '../shared/prop-types/reducerProps';
-
-
-
 
 function Copyright(props) {
     return (
@@ -41,7 +38,11 @@ const defaultTheme = createTheme();
 
 function SignInSide({ auth, dispatch }) {
 
-    console.log("Hello world", auth);
+    console.log("auth from profile", auth)
+
+    const navigate = useNavigate();
+    if (auth.isLoggedIn)
+        navigate('/');
 
     const [formData, setFormData] = useState({
         email: '',
@@ -58,7 +59,6 @@ function SignInSide({ auth, dispatch }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-        // validateForm();
     };
 
     const validateForm = () => {

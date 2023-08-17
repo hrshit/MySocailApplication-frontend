@@ -1,9 +1,10 @@
-import { register, login } from "../../api/auth";
+import { register, login, logout } from "../../api/auth";
 
 export const LOGIN = "LOGIN";
 export const REGISTER = "REGISTER";
 export const FETCHING = "FETCHING";
 export const ERROR = "ERROR";
+export const LOGOUT = "LOGOUT";
 
 export const registerAction = (registerBody) => async dispatch => {
     console.log("from register action ", registerBody);
@@ -12,7 +13,7 @@ export const registerAction = (registerBody) => async dispatch => {
     });
     try {
         const response = await register(registerBody);
-        if (!(response.code == 200)) throw response;
+        if (!(response.user)) throw response;
         dispatch({
             type: REGISTER,
             payload: response,
@@ -30,10 +31,28 @@ export const loginAction = (loginBody) => async dispatch => {
     });
     try {
         const response = await login(loginBody);
-        if (!(response.code == 200)) throw response;
+        if (!(response.user)) throw response;
         dispatch({
             type: LOGIN,
             payload: response,
+        })
+    }
+    catch (err) {
+        dispatch(foundError(err.message));
+    }
+}
+
+export const logoutAction = (refreshToken) => async dispatch => {
+    dispatch({
+        type: FETCHING
+    });
+    try {
+        console.log("token from the authaction", refreshToken);
+        console.log(JSON.stringify(refreshToken));
+        const response = await logout(refreshToken);
+        console.log(response.status);
+        dispatch({
+            type: LOGOUT,
         })
     }
     catch (err) {
