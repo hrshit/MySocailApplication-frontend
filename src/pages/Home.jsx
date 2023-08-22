@@ -1,9 +1,12 @@
-import Button from "@mui/material/Button";
+import { Box } from "@mui/material";
+import Message from "../components/Message";
 
 export default function Home() {
     return (
-        <div>
-            <Button variant="contained">Home</Button>
-        </div>
+        <Box>
+            <Message />
+            {/* <Message /> */}
+        </Box>
+
     );
 } 

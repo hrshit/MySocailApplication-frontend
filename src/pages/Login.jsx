@@ -23,8 +23,8 @@ function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
+            <Link color="inherit" >
+                FEED
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -89,7 +89,7 @@ function SignInSide({ auth, dispatch }) {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Grid container component="main" sx={{ height: '100vh' }}>
+            <Grid container component="main" sx={{ height: '85vh', width: '65vw', margin: '0rem auto' }}>
                 <CssBaseline />
                 <Grid
                     item
@@ -120,8 +120,6 @@ function SignInSide({ auth, dispatch }) {
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Log in
-                            {/* {auth.errorMessage && <div>{auth.errorMessage}</div>} */}
-                            {/* {auth.successMessage && <div>{auth.successMessage}</div>} */}
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <TextField
@@ -178,7 +176,7 @@ function SignInSide({ auth, dispatch }) {
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link href="#" variant="body2">
+                                    <Link href="/register" variant="body2">
                                         {"Don't have an account? Sign Up"}
                                     </Link>
                                 </Grid>

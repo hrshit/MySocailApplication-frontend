@@ -30,6 +30,16 @@ const authReducer = (state = defaultState, action) => {
                 errorMessage: '',
             }
         }
+        case LOGOUT: {
+            return {
+                ...state,
+                isLoggedIn: false,
+                isFetching: false,
+                tokens: {},
+                loggedInUser: {},
+                errorMessage: '',
+            }
+        }
         case FETCHING: {
             return {
                 ...state,
@@ -41,15 +51,6 @@ const authReducer = (state = defaultState, action) => {
                 ...state,
                 errorMessage: action.payload,
                 isFetching: false
-            }
-        }
-        case LOGOUT: {
-            return {
-                ...state,
-                isLoggedIn: false,
-                tokens: {},
-                loggedInUser: {},
-                errorMessage: '',
             }
         }
         default:

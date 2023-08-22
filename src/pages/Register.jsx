@@ -24,7 +24,7 @@ function Copyright(props) {
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://mui.com/">
-                Your Website
+                FEED
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -107,7 +107,7 @@ function SignUp({ auth, dispatch }) {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" sx={{ height: '75vh', width: '50vw', m: '0 auto' }}>
                 <CssBaseline />
                 <Box
                     sx={{
@@ -209,11 +209,11 @@ function SignUp({ auth, dispatch }) {
                             loading={auth.isFetching}
                             loadingPosition="end"
                         >
-                            <span>Send</span>
+                            <span>Register</span>
                         </LoadingButton>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href="/login" variant="body2" sx={{}}>
                                     Already have an account? Login
                                 </Link>
                             </Grid>
