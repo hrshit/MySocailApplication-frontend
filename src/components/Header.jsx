@@ -63,7 +63,7 @@ const Header = ({ auth, dispatch }) => {
                                             aria-controls="menu-appbar"
                                             aria-haspopup="true"
                                             // onClick={handleProfile}
-                                            color="inherit"
+                                            color="Blue"
                                         >
                                             <AccountCircle />
                                         </IconButton>

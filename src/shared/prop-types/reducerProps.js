@@ -9,3 +9,9 @@ export const authProps = shape({
     loggedInUser: PropTypes.object,
     errorMessage: PropTypes.string,
 })
+
+export const messageProps = shape({
+    isFetching: bool,
+    messages: PropTypes.object,
+    errorMessage: PropTypes.string,
+})

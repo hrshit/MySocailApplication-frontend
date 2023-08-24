@@ -12,7 +12,7 @@ const messageReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 isFetching: false,
-                messages: action.payload.messages,
+                messages: action.payload.results,
                 errorMessage: '',
             }
         }
