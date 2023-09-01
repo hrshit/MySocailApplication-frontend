@@ -25,8 +25,8 @@ function Profile({ auth }) {
         padding: "0em"
     }
     return (
-        <Container maxWidth="md" sx={{ alignItems: 'center' }} >
-            <Box sx={{ p: 2, m: 5, border: '1px solid black', backgroundColor: '#fff' }}>
+        <Container maxWidth="md" sx={{ alignItems: 'center', backgroundColor: "primary.main", px: 0 }} >
+            <Box sx={{ p: 2, my: 5, mx: 0, border: '1px solid black', backgroundColor: '#fff' }}>
                 <Divider textAlign="left">
                     <Box sx={dpStyles}>
                         <PersonIcon sx={{ height: "5em", width: "5em" }} />

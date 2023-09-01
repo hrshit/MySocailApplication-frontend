@@ -11,7 +11,6 @@ import SyncIcon from '@mui/icons-material/Sync';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { logoutAction } from '../redux/actions/authActions';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Padding } from '@mui/icons-material';
 
 
 const defaultTheme = createTheme();
@@ -27,11 +26,6 @@ const Header = ({ auth, dispatch }) => {
         }
         dispatch(logoutAction(logOutReqBody));
         navigate('/login');
-    }
-
-    const handleProfile = () => {
-        console.log("profile uploading");
-        navigate('/profile');
     }
 
     return (
