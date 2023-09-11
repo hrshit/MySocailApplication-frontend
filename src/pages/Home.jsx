@@ -46,7 +46,7 @@ function Home({ auth, messages, dispatch }) {
                     variant="contained"
                     sx={{ mt: 2, mb: 0 }}
                     size="small"
-                    // loading={auth.isFetching}
+                    loading={messages.isFetching}
                     loadingPosition="end"
                 >
                     <span>post</span>
@@ -55,7 +55,7 @@ function Home({ auth, messages, dispatch }) {
 
 
             {messages.messages.map((item) => (
-                <Message postedBy={item.postedBy.name} messageContent={item.content} likes={item.likes} messageId={item.id} />
+                <Message postedBy={item.postedBy} messageContent={item.content} likes={item.likes} messageId={item.id} />
             ))}
         </Box>
     );

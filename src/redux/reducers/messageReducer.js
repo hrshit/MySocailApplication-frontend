@@ -1,4 +1,4 @@
-import { CREATE_MESSAGE, GET_MESSAGES, ERROR, FETCHING, LIKE_MESSAGE } from "../actions/messageAction";
+import { CREATE_MESSAGE, GET_MESSAGES, ERROR, FETCHING, LIKE_MESSAGE, DELETE_MESSAGE } from "../actions/messageAction";
 
 const defaultState = {
     isFetching: false,
@@ -24,6 +24,13 @@ const messageReducer = (state = defaultState, action) => {
             }
         }
         case LIKE_MESSAGE: {
+            return {
+                ...state,
+                isFetching: false,
+                errorMessage: '',
+            }
+        }
+        case DELETE_MESSAGE: {
             return {
                 ...state,
                 isFetching: false,

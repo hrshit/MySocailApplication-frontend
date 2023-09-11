@@ -1,8 +1,9 @@
-import { getMessages, likeMessage, createMessage } from "../../api/message";
+import { getMessages, likeMessage, createMessage, deleteMessage } from "../../api/message";
 
 export const CREATE_MESSAGE = "CREATE_MESSAGES";
 export const GET_MESSAGES = "GET_MESSAGES";
 export const LIKE_MESSAGE = "LIKE_MESSAGE";
+export const DELETE_MESSAGE = "DELETE_MESSAGE";
 export const FETCHING = "FETCHING";
 export const ERROR = "ERROR";
 
@@ -37,6 +38,22 @@ export const likeMessageAction = (msgId, authToken) => async dispatch => {
         if (!(response.results)) throw response;
         dispatch({
             type: LIKE_MESSAGE,
+        });
+    }
+    catch (err) {
+        dispatch(foundError(err.message));
+    }
+}
+export const deleteMessageAction = (msgId, authToken) => async dispatch => {
+    dispatch({
+        type: FETCHING
+    });
+    try {
+        const response = await deleteMessage(msgId, authToken);
+        console.log("response from DEletemessage ", response);
+        if (!(response.results)) throw response;
+        dispatch({
+            type: DELETE_MESSAGE,
         });
     }
     catch (err) {
