@@ -2,9 +2,10 @@
 import React from 'react';
 import { useState } from "react";
 import { connect } from 'react-redux';
-import { Avatar, Card, CardContent, CardHeader, CardActions, Button, Typography, Container, IconButton } from '@mui/material';
+import { Avatar, Card, CardContent, CardHeader, CardActions, Button, Typography, Container, IconButton, Box } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import TextField from '@mui/material/TextField';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,8 +14,10 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import { authProps, messageProps } from '../shared/prop-types/reducerProps';
-import { likeMessageAction, getMessagesAction, deleteMessageAction } from "../redux/actions/messageAction";
+import { likeMessageAction, getMessagesAction, deleteMessageAction, updateMessageAction } from "../redux/actions/messageAction";
+import { Widgets } from '@mui/icons-material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -24,6 +27,12 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
     const [liked, setLiked] = useState(((likes.filter((user) => (user.id == auth.loggedInUser.id))).length > 0));
     const [likesCount, setLikesCount] = useState(likes.length);
     const [open, setOpen] = React.useState(false);
+    const [editable, setEditable] = useState(false);
+    const [newMessage, setNewMessage] = useState();
+
+    const handleChange = (e) => {
+        setNewMessage(e.target.value);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -32,6 +41,11 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleEditable = async () => {
+        setNewMessage(messageContent);
+        setEditable(true);
+    }
 
     const getLikeInfo = () => {
         let information;
@@ -46,7 +60,6 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
 
     const updateLikes = async () => {
         await dispatch(likeMessageAction(messageId, auth.tokens.access.token));
-        dispatch(getMessagesAction("", auth.tokens.access.token));
         if (liked) {
             setLiked(false)
             setLikesCount(likesCount - 1)
@@ -57,27 +70,37 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
         }
     }
 
+    const updateMessage = async () => {
+        const createMessageBody = {
+            content: newMessage,
+        }
+        await dispatch(updateMessageAction(messageId, createMessageBody, auth.tokens.access.token));
+        setEditable(false);
+    }
+
+    const cancelUpdate = () => setEditable(false);
+
     const deleteMessage = async () => {
         await dispatch(deleteMessageAction(messageId, auth.tokens.access.token));
-        dispatch(getMessagesAction("", auth.tokens.access.token));
-        () => close()
+        handleClose();
     }
+
 
     return (
         <Container maxWidth="sm"  >
-            <Card sx={{ my: 5, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+            <Card sx={{ my: 5, mx: { xs: 2, md: 0 }, display: "flex", flexDirection: "column", alignItems: "start", justifyitem: 'left' }}>
                 <CardHeader
                     avatar={
                         <Avatar sx={{ bgcolor: "primary" }} >
                             <PersonOutlineIcon />
                         </Avatar>
                     }
-                    title={<Typography sx={{ fontWeight: 600, p: 0, marginRight: "18rem" }} variant="h6" component="span">{postedBy.name}</Typography>}
+                    title={<Typography sx={{ fontWeight: 600, p: 0, marginRight: "1rem" }} variant="h6" component="span">{postedBy.name}</Typography>}
                     action={
                         (postedBy.id == auth.loggedInUser.id)
                         &&
-                        <div>
-                            <Button variant="outlined" onClick={handleClickOpen}>
+                        <Box sx={{ ml: { xs: "1em", md: "5em" }, pl: { xs: "1em", md: "5em" } }}>
+                            <Button sx={{ m: 0, p: 0 }} onClick={handleClickOpen}>
                                 <DeleteOutlineIcon />
                             </Button>
                             <Dialog
@@ -90,19 +113,66 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
                                 <DialogTitle>{"Delete Message"}</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText id="alert-dialog-slide-description">
-                                        Are you sure you want to delete the message?                                    </DialogContentText>
+                                        Are you sure you want to delete the message?
+                                    </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={handleClose}>NO</Button>
-                                    <Button onClick={deleteMessage}>yes</Button>
+                                    <Button onClick={handleClose} variant='contained' size='small'>NO</Button>
+                                    <LoadingButton
+                                        onClick={deleteMessage}
+                                        variant="contained"
+                                        size="small"
+                                        loading={messages.isFetching}
+                                        loadingPosition="end"
+                                    >
+                                        <span>yes</span>
+                                    </LoadingButton>
                                 </DialogActions>
                             </Dialog>
-                        </div>
+                            <Button sx={{ mr: 4, p: 0 }} onClick={handleEditable}>
+                                <EditNoteIcon />
+                            </Button>
+                        </Box>
                     }
                 >
                 </CardHeader>
-                < CardContent  >
-                    <Typography  >{messageContent}</Typography>
+                < CardContent sx={{ display: 'flex', minWidth: "90%", flexDirection: "column", alignItems: "flex-start" }}  >
+                    {(editable) ?
+                        <>
+                            <TextField
+                                fullWidth
+                                multiline
+                                label="using Input (default)"
+                                value={newMessage}
+                                onChange={handleChange}
+                            />
+                            <Box sx={{ display: 'flex', ml: 10, flexDirection: "row" }}>
+                                <LoadingButton
+                                    onClick={updateMessage}
+                                    variant="contained"
+                                    sx={{ mr: 1, mt: 1 }}
+                                    size="small"
+                                    loading={messages.isFetching}
+                                    loadingPosition="end"
+                                >
+                                    <span>Update</span>
+                                </LoadingButton>
+                                <Button
+                                    onClick={cancelUpdate}
+                                    variant='contained'
+                                    sx={{ mr: 1, mt: 1 }}
+                                    size="small"
+
+                                >
+                                    <span>Cancel</span>
+                                </Button>
+
+
+                            </Box>
+                        </>
+                        :
+                        <Box sx={{ display: 'flex', alignItems: "start", textAlign: "left" }}>{messageContent}</Box>
+                    }
                 </CardContent >
                 <CardActions>
                     <IconButton

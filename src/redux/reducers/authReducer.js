@@ -5,7 +5,7 @@ const defaultState = {
     isLoggedIn: false,
     tokens: {},
     loggedInUser: {},
-    errorMessage: '',
+    errorMessage: {},
 };
 
 const authReducer = (state = defaultState, action) => {
@@ -17,7 +17,7 @@ const authReducer = (state = defaultState, action) => {
                 isLoggedIn: true,
                 tokens: action.payload.tokens,
                 loggedInUser: action.payload.user,
-                errorMessage: '',
+                errorMessage: {},
             }
         }
         case REGISTER: {
@@ -27,7 +27,7 @@ const authReducer = (state = defaultState, action) => {
                 isLoggedIn: true,
                 tokens: action.payload.tokens,
                 loggedInUser: action.payload.user,
-                errorMessage: '',
+                errorMessage: {},
             }
         }
         case LOGOUT: {
@@ -37,7 +37,7 @@ const authReducer = (state = defaultState, action) => {
                 isFetching: false,
                 tokens: {},
                 loggedInUser: {},
-                errorMessage: '',
+                errorMessage: {},
             }
         }
         case FETCHING: {

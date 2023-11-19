@@ -1,22 +1,26 @@
-import { getMessages, likeMessage, createMessage, deleteMessage } from "../../api/message";
+import { getMessages, likeMessage, createMessage, deleteMessage, updateMessage } from "../../api/message";
 
 export const CREATE_MESSAGE = "CREATE_MESSAGES";
 export const GET_MESSAGES = "GET_MESSAGES";
 export const LIKE_MESSAGE = "LIKE_MESSAGE";
 export const DELETE_MESSAGE = "DELETE_MESSAGE";
-export const FETCHING = "FETCHING";
+export const UPDATE_MESSAGE = "UPDATE_MESSAGE";
+export const CLEAR_MESSAGE = "CLEAR_MESSAGE";
+export const FETCH = "FETCH";
 export const ERROR = "ERROR";
 
 
 export const getMessagesAction = (params, authToken) => async dispatch => {
-    console.log("Hello i am running  ", params, authToken);
+    console.log("1 action is running");
     dispatch({
-        type: FETCHING
+        type: FETCH
     });
     try {
         const response = await getMessages(params, authToken);
         console.log("response from messsageapi", response);
         if (!(response.results)) throw response;
+        if (response.page == 1)
+            dispatch({ type: CLEAR_MESSAGE });
         dispatch({
             type: GET_MESSAGES,
             payload: response,
@@ -28,16 +32,17 @@ export const getMessagesAction = (params, authToken) => async dispatch => {
 }
 
 export const likeMessageAction = (msgId, authToken) => async dispatch => {
-    console.log("from likemessage ", authToken, msgId);
+    console.log(msgId);
     dispatch({
-        type: FETCHING
+        type: FETCH
     });
     try {
         const response = await likeMessage(msgId, authToken);
+        if (!(response)) throw response;
         console.log("response from likemessage ", response);
-        if (!(response.results)) throw response;
         dispatch({
             type: LIKE_MESSAGE,
+            payload: response,
         });
     }
     catch (err) {
@@ -45,15 +50,35 @@ export const likeMessageAction = (msgId, authToken) => async dispatch => {
     }
 }
 export const deleteMessageAction = (msgId, authToken) => async dispatch => {
+    console.log("3");
     dispatch({
-        type: FETCHING
+        type: FETCH
     });
     try {
         const response = await deleteMessage(msgId, authToken);
         console.log("response from DEletemessage ", response);
-        if (!(response.results)) throw response;
+        if ((response)) throw response;
         dispatch({
             type: DELETE_MESSAGE,
+            payload: msgId
+        });
+    }
+    catch (err) {
+        dispatch(foundError(err.message));
+    }
+}
+export const updateMessageAction = (msgId, messageBody, authToken) => async dispatch => {
+    console.log("4");
+    dispatch({
+        type: FETCH
+    });
+    try {
+        const response = await updateMessage(msgId, messageBody, authToken);
+        console.log("response from updateMessage ", response);
+        if (!(response)) throw response;
+        dispatch({
+            type: UPDATE_MESSAGE,
+            payload: response,
         });
     }
     catch (err) {
@@ -61,15 +86,16 @@ export const deleteMessageAction = (msgId, authToken) => async dispatch => {
     }
 }
 export const createMessageAction = (messageBody, authToken) => async dispatch => {
+    console.log("5");
     dispatch({
-        type: FETCHING
+        type: FETCH
     });
     try {
         const response = await createMessage(messageBody, authToken);
-        console.log("response from createmessage ", response);
         if (!(response.results)) throw response;
         dispatch({
             type: CREATE_MESSAGE,
+            payload: response,
         });
     }
     catch (err) {

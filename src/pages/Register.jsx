@@ -196,9 +196,13 @@ function SignUp({ auth, dispatch }) {
                                 />
                             </Grid>
                         </Grid>
-                        {auth.errorMessage &&
+                        {/* {auth.errorMessage &&
                             <Alert variant="filled" severity="error">
                                 {auth.errorMessage}
+                            </Alert>} */}
+                        {(auth.errorMessage.code == 400) &&
+                            <Alert variant="filled" severity="error">
+                                {auth.errorMessage.message}
                             </Alert>}
                         <LoadingButton
                             type="submit"

@@ -13,5 +13,15 @@ export const authProps = shape({
 export const messageProps = shape({
     isFetching: bool,
     messages: PropTypes.object,
+    page: PropTypes.number,
+    limit: PropTypes.number,
+    totalPages: PropTypes.number,
+    totalResults: PropTypes.number,
+    errorMessage: PropTypes.string,
+})
+
+export const notificationProps = shape({
+    isFetching: bool,
+    notifications: PropTypes.object,
     errorMessage: PropTypes.string,
 })

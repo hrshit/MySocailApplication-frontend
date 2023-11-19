@@ -38,7 +38,7 @@ const defaultTheme = createTheme();
 
 function SignInSide({ auth, dispatch }) {
 
-    console.log("auth from profile", auth)
+    console.log("Hello from login", auth);
 
     const navigate = useNavigate();
     if (auth.isLoggedIn)
@@ -154,9 +154,9 @@ function SignInSide({ auth, dispatch }) {
                                 control={<Checkbox value="remember" color="primary" />}
                                 label="Remember me"
                             />
-                            {auth.errorMessage &&
+                            {(auth.errorMessage.code === 401) &&
                                 <Alert variant="filled" severity="error">
-                                    {auth.errorMessage}
+                                    {auth.errorMessage.message}
                                 </Alert>}
                             <LoadingButton
                                 type="submit"

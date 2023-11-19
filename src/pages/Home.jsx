@@ -7,35 +7,52 @@ import Container from '@mui/material/Container';
 import { Box } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Message from "../components/Message";
+import InfiniteScroll from 'react-infinite-scroller';
 import { getMessagesAction, createMessageAction } from "../redux/actions/messageAction";
 import { authProps, messageProps } from '../shared/prop-types/reducerProps';
 
 function Home({ auth, messages, dispatch }) {
 
+    console.log("starting");
+    console.log("messages from home", messages);
     const navigate = useNavigate();
 
-    const [newMessage, setNewMessage] = useState();
+    useEffect(() => {
+        (!auth.isLoggedIn) && navigate('/login');
+    }, []);
 
+    const [newMessage, setNewMessage] = useState();
+    const [hasitem, setHasItem] = useState(true);
     const handleChange = (e) => {
         setNewMessage(e.target.value);
     };
 
-    const handleSubmit = () => {
+    const getMessages = async (isRefereshRequired = false, limit = 10) => {
+        console.log("called");
+        if (!messages.isFetching) {
+            let params = '';
+            let page = isRefereshRequired ? 1 : (messages.page + 1);
+            console.log("page value", page);
+            params = params + "?page=" + page;
+            params = params + "&limit=" + limit;
+            params = params + "&sortBy=postedAt:desc";
+            console.log("here is the params", params);
+            if (messages.page > 0 && (page > messages.totalPages))
+                setHasItem(false);
+            else
+                await dispatch(getMessagesAction(params, auth.tokens.access.token));
+        }
+    };
+
+    const handleSubmit = async () => {
         const createMessageBody = {
             content: newMessage,
         }
-        dispatch(createMessageAction(createMessageBody, auth.tokens.access.token));
-        getMessages();
+        await dispatch(createMessageAction(createMessageBody, auth.tokens.access.token));
         setNewMessage("");
+        await getMessages(true);
+        setHasItem(true);
     }
-
-    function getMessages() {
-        dispatch(getMessagesAction("", auth.tokens.access.token));
-    }
-
-    useEffect(() => {
-        (!auth.isLoggedIn) ? navigate('/login') : getMessages()
-    }, []);
 
     return (
         <Box>
@@ -52,11 +69,15 @@ function Home({ auth, messages, dispatch }) {
                     <span>post</span>
                 </LoadingButton>
             </Container>
-
-
-            {messages.messages.map((item) => (
-                <Message postedBy={item.postedBy} messageContent={item.content} likes={item.likes} messageId={item.id} />
-            ))}
+            <InfiniteScroll
+                loadMore={async () => getMessages()}
+                hasMore={hasitem}
+                loader={<div>Loading ...</div>}
+            >
+                {messages.messages.map((item) => (
+                    <Message id={item.id} postedBy={item.postedBy} messageContent={item.content} likes={item.likes} messageId={item.id} />
+                ))}
+            </InfiniteScroll>
         </Box>
     );
 }

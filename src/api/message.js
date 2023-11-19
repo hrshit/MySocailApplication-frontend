@@ -1,5 +1,5 @@
 export const getMessages = async (params, authToken) => {
-    const apiResponse = await fetch('http://127.0.0.1:3000/v1/messages',
+    const apiResponse = await fetch('http://127.0.0.1:3000/v1/messages' + params,
         {
             method: 'GET',
             headers: { 'Content-type': 'application/json; charset=UTF-8', 'Authorization': "Bearer " + authToken },
@@ -39,16 +39,30 @@ export const deleteMessage = async (msgId, authToken) => {
 
     return apiResponse;
 }
+export const updateMessage = async (msgId, messageBody, authToken) => {
+    const apiResponse = await fetch('http://127.0.0.1:3000/v1/messages/' + msgId,
+        {
+            method: 'PATCH',
+            body: JSON.stringify(messageBody),
+            headers: { 'Content-type': 'application/json; charset=UTF-8', 'Authorization': "Bearer " + authToken },
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .catch((err) => { console.log(err.message); });
+
+    return apiResponse;
+}
 
 export const createMessage = async (messageBody, authToken) => {
-    const apiResponse = await fetch('http://127.0.0.1:3000/v1/messages?limit=20',
+    const apiResponse = await fetch('http://127.0.0.1:3000/v1/messages',
         {
             method: 'POST',
             body: JSON.stringify(messageBody),
             headers: { 'Content-type': 'application/json; charset=UTF-8', 'Authorization': "Bearer " + authToken },
         })
         .then((response) => {
-            console.log("cREATE MESSAGE response");
+            console.log("MESSAGE response", response);
             return response;
         })
         .catch((err) => { console.log(err.message); });

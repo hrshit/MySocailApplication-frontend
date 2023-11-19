@@ -20,7 +20,7 @@ export const registerAction = (registerBody) => async dispatch => {
         })
     }
     catch (err) {
-        dispatch(foundError(err.message));
+        dispatch(foundError(err));
     }
 }
 
@@ -38,7 +38,7 @@ export const loginAction = (loginBody) => async dispatch => {
         })
     }
     catch (err) {
-        dispatch(foundError(err.message));
+        dispatch(foundError(err));
     }
 }
 
@@ -56,7 +56,7 @@ export const logoutAction = (refreshToken) => async dispatch => {
         })
     }
     catch (err) {
-        dispatch(foundError(err.message));
+        dispatch(foundError(err));
     }
 }
 
