@@ -1,21 +1,37 @@
 import React from 'react';
 import './Header.css';
-import { AppBar, Toolbar, Stack, Box } from '@mui/material'
+import { AppBar, Toolbar, Stack, Box, Divider } from '@mui/material'
 import Typography from '@mui/material/Typography';
-import { authProps } from '../shared/prop-types/reducerProps';
+import { authProps, notificationProps } from '../shared/prop-types/reducerProps';
 import { useNavigate, Link, Outlet } from 'react-router-dom';
 import { connect } from 'react-redux';
 import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import SyncIcon from '@mui/icons-material/Sync';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PendingIcon from '@mui/icons-material/Pending';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { logoutAction } from '../redux/actions/authActions';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { getNotificationAction } from '../redux/actions/notificationActions';
+import { formatDistanceToNow } from 'date-fns'
 
 
 const defaultTheme = createTheme();
 
-const Header = ({ auth, dispatch }) => {
+const Header = ({ auth, notifications, dispatch }) => {
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+        getNotification();
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     const navigate = useNavigate();
 
@@ -26,6 +42,21 @@ const Header = ({ auth, dispatch }) => {
         }
         dispatch(logoutAction(logOutReqBody));
         navigate('/login');
+    }
+
+    const getNotification = async () => {
+        let params = '';
+        params = params + "?receiver=" + auth.loggedInUser.id;
+        console.log("from notification", auth.loggedInUser.id);
+        params = params + "&sortBy=postedAt:desc";
+        await dispatch(getNotificationAction(params, auth.tokens.access.token));
+    };
+
+    const timediffrence = (createdDateString) => {
+        const createdDate = new Date(createdDateString);
+        const formattedTimeDifference = formatDistanceToNow(createdDate, { addSuffix: true });
+        console.log(formattedTimeDifference);
+        return formattedTimeDifference;
     }
 
     return (
@@ -46,10 +77,12 @@ const Header = ({ auth, dispatch }) => {
                             }
                             {
                                 (auth.isLoggedIn) &&
-                                <>
-                                    <Typography variant="h6" component="div" sx={{ p: 1, }}>
-                                        Welcome {auth.loggedInUser.name}
-                                    </Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Box>
+                                        <Typography variant="h6" component="div" sx={{ p: { xs: 1, md: 1 }, fontWeight: { xs: 10, md: 500 } }}>
+                                            Welcome {auth.loggedInUser.name}
+                                        </Typography>
+                                    </Box>
                                     <Link to="/profile">
                                         <IconButton
                                             size="large"
@@ -65,6 +98,44 @@ const Header = ({ auth, dispatch }) => {
                                     <IconButton
                                         size="large"
                                         aria-label="account of current user"
+                                        aria-controls={open ? 'basic-menu' : undefined}
+                                        aria-haspopup="true"
+                                        aria-expanded={open ? 'true' : undefined}
+                                        onClick={handleClick}
+                                        color="white"
+                                    >
+                                        <NotificationsIcon />
+                                    </IconButton>
+                                    <Menu
+                                        id="basic-menu"
+                                        anchorEl={anchorEl}
+                                        open={open}
+                                        onClose={handleClose}
+                                        // onLoad={notifications.isFetching}
+                                        MenuListProps={{
+                                            'aria-labelledby': 'basic-button',
+                                        }}
+                                    >
+                                        {
+                                            (notifications.notifications.isFetching)
+                                                ? <MenuItem> Loading... <PendingIcon /></MenuItem>
+                                                : (
+                                                    (notifications.notifications.length === 0)
+                                                        ? <MenuItem>No new notification</MenuItem>
+                                                        : notifications.notifications.map((item) => (
+                                                            <MenuItem> {item.creator.id === auth.loggedInUser.id ? "You" : item.creator.name} {item.notificationType}
+                                                                <Typography sx={{ mt: 1.5, ml: 1 }} variant="caption" display="block" gutterBottom>
+                                                                    {timediffrence(item.actedAt)}
+                                                                </Typography>
+                                                            </MenuItem>
+                                                        ))
+                                                )
+                                        }
+
+                                    </Menu>
+                                    <IconButton
+                                        size="large"
+                                        aria-label="account of current user"
                                         aria-controls="menu-appbar"
                                         aria-haspopup="true"
                                         onClick={handleLogout}
@@ -72,7 +143,7 @@ const Header = ({ auth, dispatch }) => {
                                     >
                                         {(auth.isFetching) ? <SyncIcon /> : <LogoutIcon />}
                                     </IconButton>
-                                </>
+                                </Box>
                             }
                         </Stack >
                     </Toolbar >
@@ -81,15 +152,17 @@ const Header = ({ auth, dispatch }) => {
                     <Outlet />
                 </div>
             </Box>
-        </ThemeProvider>
+        </ThemeProvider >
     );
 
 };
 
 Header.propTypes = {
     auth: authProps.isRequired,
+    notifications: notificationProps.isRequired
 };
 
 export default connect((state) => ({
     auth: state.auth,
+    notifications: state.notifications
 }))(Header);

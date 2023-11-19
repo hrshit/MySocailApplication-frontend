@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { authReducer, messageReducer } from "./redux/reducers";
+import { authReducer, messageReducer, notificationReducer } from "./redux/reducers";
 
 const store = configureStore({
     reducer: {
         auth: authReducer,
-        messages: messageReducer
+        messages: messageReducer,
+        notifications: notificationReducer
     }
 })
 

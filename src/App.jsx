@@ -3,6 +3,7 @@ import Login from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Profile from "./pages/Profile.jsx";
+import Notification from "./pages/Notification.jsx";
 import "./App.css";
 import Header from './components/Header.jsx';
 import { connect } from 'react-redux';
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "notification",
+        element: <Notification />,
       }
     ],
   },
