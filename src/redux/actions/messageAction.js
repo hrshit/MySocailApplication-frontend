@@ -11,13 +11,11 @@ export const ERROR = "ERROR";
 
 
 export const getMessagesAction = (params, authToken) => async dispatch => {
-    console.log("1 action is running");
     dispatch({
         type: FETCH
     });
     try {
         const response = await getMessages(params, authToken);
-        console.log("response from messsageapi", response);
         if (!(response.results)) throw response;
         if (response.page == 1)
             dispatch({ type: CLEAR_MESSAGE });
@@ -32,14 +30,12 @@ export const getMessagesAction = (params, authToken) => async dispatch => {
 }
 
 export const likeMessageAction = (msgId, authToken) => async dispatch => {
-    console.log(msgId);
     dispatch({
         type: FETCH
     });
     try {
         const response = await likeMessage(msgId, authToken);
         if (!(response)) throw response;
-        console.log("response from likemessage ", response);
         dispatch({
             type: LIKE_MESSAGE,
             payload: response,
@@ -50,13 +46,11 @@ export const likeMessageAction = (msgId, authToken) => async dispatch => {
     }
 }
 export const deleteMessageAction = (msgId, authToken) => async dispatch => {
-    console.log("3");
     dispatch({
         type: FETCH
     });
     try {
         const response = await deleteMessage(msgId, authToken);
-        console.log("response from DEletemessage ", response);
         if ((response)) throw response;
         dispatch({
             type: DELETE_MESSAGE,
@@ -68,13 +62,11 @@ export const deleteMessageAction = (msgId, authToken) => async dispatch => {
     }
 }
 export const updateMessageAction = (msgId, messageBody, authToken) => async dispatch => {
-    console.log("4");
     dispatch({
         type: FETCH
     });
     try {
         const response = await updateMessage(msgId, messageBody, authToken);
-        console.log("response from updateMessage ", response);
         if (!(response)) throw response;
         dispatch({
             type: UPDATE_MESSAGE,
@@ -86,7 +78,6 @@ export const updateMessageAction = (msgId, messageBody, authToken) => async disp
     }
 }
 export const createMessageAction = (messageBody, authToken) => async dispatch => {
-    console.log("5");
     dispatch({
         type: FETCH
     });

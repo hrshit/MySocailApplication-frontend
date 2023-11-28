@@ -1,6 +1,6 @@
 import React from 'react';
 import './Header.css';
-import { AppBar, Toolbar, Stack, Box, Divider } from '@mui/material'
+import { AppBar, Toolbar, Stack, Box } from '@mui/material'
 import Typography from '@mui/material/Typography';
 import { authProps, notificationProps } from '../shared/prop-types/reducerProps';
 import { useNavigate, Link, Outlet } from 'react-router-dom';
@@ -47,7 +47,6 @@ const Header = ({ auth, notifications, dispatch }) => {
     const getNotification = async () => {
         let params = '';
         params = params + "?receiver=" + auth.loggedInUser.id;
-        console.log("from notification", auth.loggedInUser.id);
         params = params + "&sortBy=postedAt:desc";
         await dispatch(getNotificationAction(params, auth.tokens.access.token));
     };
@@ -55,7 +54,6 @@ const Header = ({ auth, notifications, dispatch }) => {
     const timediffrence = (createdDateString) => {
         const createdDate = new Date(createdDateString);
         const formattedTimeDifference = formatDistanceToNow(createdDate, { addSuffix: true });
-        console.log(formattedTimeDifference);
         return formattedTimeDifference;
     }
 
@@ -64,22 +62,36 @@ const Header = ({ auth, notifications, dispatch }) => {
             <Box sx={{ width: '100vw' }}>
                 <AppBar position='static' sx={{ margin: 0 }} >
                     <Toolbar >
-                        <Link className='link' to='/' > <img src="feed.png" alt="" className='logo' /></Link>
+                        <Link
+                            className='link' to='/'
+                        >
+                            <img
+                                src="feed.png"
+                                alt=""
+                                className='logo'
+                            />
+                        </Link>
                         <Box sx={{ flexGrow: 1 }} />
                         <Stack direction='row' spacing={2}  >
-                            {!(auth.isLoggedIn) &&
+                            {
+                                !(auth.isLoggedIn) &&
                                 <>
-
                                     <Link className='link' to='/register'>Register</Link>
                                     <Link className='link' to='/login'>Login</Link>
-
                                 </>
                             }
                             {
                                 (auth.isLoggedIn) &&
                                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                     <Box>
-                                        <Typography variant="h6" component="div" sx={{ p: { xs: 1, md: 1 }, fontWeight: { xs: 10, md: 500 } }}>
+                                        <Typography
+                                            variant="h6"
+                                            component="div"
+                                            sx={{
+                                                p: { xs: 1, md: 1 },
+                                                fontWeight: { xs: 10, md: 500 }
+                                            }}
+                                        >
                                             Welcome {auth.loggedInUser.name}
                                         </Typography>
                                     </Box>
@@ -89,7 +101,6 @@ const Header = ({ auth, notifications, dispatch }) => {
                                             aria-label="account of current user"
                                             aria-controls="menu-appbar"
                                             aria-haspopup="true"
-                                            // onClick={handleProfile}
                                             color="Blue"
                                         >
                                             <AccountCircle />
@@ -111,20 +122,32 @@ const Header = ({ auth, notifications, dispatch }) => {
                                         anchorEl={anchorEl}
                                         open={open}
                                         onClose={handleClose}
-                                        // onLoad={notifications.isFetching}
                                         MenuListProps={{
                                             'aria-labelledby': 'basic-button',
                                         }}
                                     >
                                         {
                                             (notifications.notifications.isFetching)
-                                                ? <MenuItem> Loading... <PendingIcon /></MenuItem>
+                                                ?
+                                                <MenuItem> Loading... <PendingIcon /></MenuItem>
                                                 : (
                                                     (notifications.notifications.length === 0)
-                                                        ? <MenuItem>No new notification</MenuItem>
-                                                        : notifications.notifications.map((item) => (
-                                                            <MenuItem> {item.creator.id === auth.loggedInUser.id ? "You" : item.creator.name} {item.notificationType}
-                                                                <Typography sx={{ mt: 1.5, ml: 1 }} variant="caption" display="block" gutterBottom>
+                                                        ?
+                                                        <MenuItem>No new notification</MenuItem>
+                                                        :
+                                                        notifications.notifications.map((item) => (
+                                                            <MenuItem>
+                                                                {item.creator.id === auth.loggedInUser.id
+                                                                    ?
+                                                                    "You"
+                                                                    :
+                                                                    item.creator.name} {item.notificationType}
+                                                                <Typography
+                                                                    sx={{ mt: 1.5, ml: 1 }}
+                                                                    variant="caption"
+                                                                    display="block"
+                                                                    gutterBottom
+                                                                >
                                                                     {timediffrence(item.actedAt)}
                                                                 </Typography>
                                                             </MenuItem>
@@ -154,7 +177,6 @@ const Header = ({ auth, notifications, dispatch }) => {
             </Box>
         </ThemeProvider >
     );
-
 };
 
 Header.propTypes = {

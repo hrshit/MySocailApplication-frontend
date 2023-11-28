@@ -17,7 +17,6 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { authProps, messageProps } from '../shared/prop-types/reducerProps';
 import { likeMessageAction, getMessagesAction, deleteMessageAction, updateMessageAction } from "../redux/actions/messageAction";
-import { Widgets } from '@mui/icons-material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -100,7 +99,9 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
                         (postedBy.id == auth.loggedInUser.id)
                         &&
                         <Box sx={{ ml: { xs: "1em", md: "5em" }, pl: { xs: "1em", md: "5em" } }}>
-                            <Button sx={{ m: 0, p: 0 }} onClick={handleClickOpen}>
+                            <Button
+                                sx={{ m: 0, p: 0 }}
+                                onClick={handleClickOpen}>
                                 <DeleteOutlineIcon />
                             </Button>
                             <Dialog
@@ -129,7 +130,9 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
                                     </LoadingButton>
                                 </DialogActions>
                             </Dialog>
-                            <Button sx={{ mr: 4, p: 0 }} onClick={handleEditable}>
+                            <Button
+                                sx={{ mr: 4, p: 0 }}
+                                onClick={handleEditable}>
                                 <EditNoteIcon />
                             </Button>
                         </Box>
@@ -162,16 +165,21 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
                                     variant='contained'
                                     sx={{ mr: 1, mt: 1 }}
                                     size="small"
-
                                 >
                                     <span>Cancel</span>
                                 </Button>
-
-
                             </Box>
                         </>
                         :
-                        <Box sx={{ display: 'flex', alignItems: "start", textAlign: "left" }}>{messageContent}</Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: "start",
+                                textAlign: "left"
+                            }}
+                        >
+                            {messageContent}
+                        </Box>
                     }
                 </CardContent >
                 <CardActions>
@@ -181,11 +189,12 @@ function Message({ postedBy, messageContent, likes, messageId, auth, dispatch, m
                     >
                         <FavoriteIcon />
                     </IconButton>
-                    <Typography > {getLikeInfo()} </Typography>
+                    <Typography >
+                        {getLikeInfo()}
+                    </Typography>
                 </CardActions>
             </Card >
         </Container >
-
     );
 }
 

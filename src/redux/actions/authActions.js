@@ -47,8 +47,6 @@ export const logoutAction = (refreshToken) => async dispatch => {
         type: FETCHING
     });
     try {
-        console.log("token from the authaction", refreshToken);
-        console.log(JSON.stringify(refreshToken));
         const response = await logout(refreshToken);
         console.log(response.status);
         dispatch({

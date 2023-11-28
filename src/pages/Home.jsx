@@ -2,19 +2,17 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroller';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { Box } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Message from "../components/Message";
-import InfiniteScroll from 'react-infinite-scroller';
 import { getMessagesAction, createMessageAction } from "../redux/actions/messageAction";
 import { authProps, messageProps } from '../shared/prop-types/reducerProps';
 
 function Home({ auth, messages, dispatch }) {
 
-    console.log("starting");
-    console.log("messages from home", messages);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,15 +26,12 @@ function Home({ auth, messages, dispatch }) {
     };
 
     const getMessages = async (isRefereshRequired = false, limit = 10) => {
-        console.log("called");
         if (!messages.isFetching) {
             let params = '';
             let page = isRefereshRequired ? 1 : (messages.page + 1);
-            console.log("page value", page);
             params = params + "?page=" + page;
             params = params + "&limit=" + limit;
             params = params + "&sortBy=postedAt:desc";
-            console.log("here is the params", params);
             if (messages.page > 0 && (page > messages.totalPages))
                 setHasItem(false);
             else
@@ -57,7 +52,12 @@ function Home({ auth, messages, dispatch }) {
     return (
         <Box>
             <Container maxWidth="sm" sx={{ my: 2, }}>
-                <TextField fullWidth label="create message" value={newMessage} onChange={handleChange} ></TextField>
+                <TextField
+                    fullWidth label="create message"
+                    value={newMessage}
+                    onChange={handleChange}
+                >
+                </TextField>
                 <LoadingButton
                     onClick={handleSubmit}
                     variant="contained"
@@ -69,15 +69,23 @@ function Home({ auth, messages, dispatch }) {
                     <span>post</span>
                 </LoadingButton>
             </Container>
+
             <InfiniteScroll
                 loadMore={async () => getMessages()}
                 hasMore={hasitem}
                 loader={<div>Loading ...</div>}
             >
                 {messages.messages.map((item) => (
-                    <Message id={item.id} postedBy={item.postedBy} messageContent={item.content} likes={item.likes} messageId={item.id} />
+                    <Message
+                        id={item.id}
+                        postedBy={item.postedBy}
+                        messageContent={item.content}
+                        likes={item.likes}
+                        messageId={item.id}
+                    />
                 ))}
             </InfiniteScroll>
+
         </Box>
     );
 }
